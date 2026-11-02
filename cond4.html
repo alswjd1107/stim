@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>자극물 조건 4 · 선제적 × 결제형</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#EEF0F3; --panel:#FFFFFF; --ink:#191919; --muted:#7A7A7A; --line:#E5E5E5;
+  --wall:#B2C7D9; --friend:#FFFFFF; --me:#FEE500; --yellow:#FEE500; --ok:#2E8B57; --focus:#3558D6;
+  --head:#FFFFFF; --ai:#FFFFFF; --ai-av:#6A5AD0; --airoom:#FFFFFF; --ai-in:#F1F1F3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#121212; --panel:#1C1C1E; --ink:#F2F2F2; --muted:#9A9A9A; --line:#2C2C2E;
+    --wall:#2B3A48; --friend:#2C2C2E; --me:#FEE500; --head:#1C1C1E; --ai:#2C2C2E; --airoom:#1C1C1E; --ai-in:#2C2C2E;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#121212; --panel:#1C1C1E; --ink:#F2F2F2; --muted:#9A9A9A; --line:#2C2C2E;
+  --wall:#2B3A48; --friend:#2C2C2E; --me:#FEE500; --head:#1C1C1E; --ai:#2C2C2E; --airoom:#1C1C1E; --ai-in:#2C2C2E;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:32px;align-items:start}
+body.participant .wrap{grid-template-columns:1fr;max-width:420px;padding:0}
+body.participant .panel{display:none}
+body.participant .replay{visibility:hidden}
+body.participant.unlocked .replay{visibility:visible}
+h1{font-size:1.35rem;margin:0 0 4px;font-weight:700}
+.sub{color:var(--muted);margin:0 0 22px;font-size:.92rem}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+fieldset{border:0;padding:0;margin:0 0 18px}
+legend{font-weight:700;font-size:.95rem;margin-bottom:8px}
+.seg{display:flex;gap:6px}
+.seg label{flex:1;position:relative}
+.seg input{position:absolute;opacity:0}
+.seg span{display:block;text-align:center;padding:9px 6px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:.9rem}
+.seg input:checked+span{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:2px}
+.code{font-size:.92rem;margin:4px 0 16px;padding:10px 12px;background:var(--page);border-radius:8px}
+.code b{font-size:1.05rem}
+button{font:inherit;cursor:pointer}
+.btn{padding:10px 14px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:var(--panel)}
+.btn:focus-visible,.replay:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.grid{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:18px}
+.grid th,.grid td{border-top:1px solid var(--line);padding:6px 4px;text-align:left}
+.grid tr{cursor:pointer}
+.grid tr.on td{font-weight:700}
+.note{font-size:.82rem;color:var(--muted);margin-top:14px}
+.note code{background:var(--page);padding:1px 4px;border-radius:4px}
+.diff{font-size:.82rem;color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+
+/* ---------- phone ---------- */
+.phone{position:relative;background:var(--wall);border-radius:30px;overflow:hidden;border:1px solid var(--line);height:780px;display:flex;flex-direction:column}
+body.participant .phone{border-radius:0;border:0;height:100vh;height:100dvh}
+body.participant{overflow:hidden;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body.participant .wrap{max-width:480px;width:100%;margin:0 auto}
+body.participant .status{padding-top:max(10px,env(safe-area-inset-top))}
+.status{background:var(--head);padding:10px 22px 4px;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;font-weight:700;color:var(--ink)}
+.status .ic{display:flex;gap:5px;align-items:center}
+.status svg{display:block;fill:var(--ink)}
+.bar{background:var(--head);padding:6px 14px 10px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.bar .l{display:flex;align-items:center;gap:8px}
+.bar .back{font-size:1.3rem;line-height:1;color:var(--ink);width:18px}
+.bar strong{font-size:1rem;font-weight:700}
+.bar small{color:var(--muted);margin-left:5px;font-size:.82rem}
+.bar .icons{display:flex;gap:14px;color:var(--ink);font-size:1rem;align-items:center}
+.replay{background:transparent;border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:.76rem;color:var(--ink)}
+.screen{flex:1;min-height:0;display:flex;flex-direction:column}
+.feed{flex:1;overflow-y:auto;padding:12px 10px 16px;display:flex;flex-direction:column;gap:8px}
+.input{background:var(--panel);border-top:1px solid var(--line);padding:8px 10px;display:flex;align-items:center;gap:8px}
+.input .plus{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);font-size:1.1rem}
+.input .box{flex:1;height:32px;border-radius:16px;background:var(--page);border:1px solid var(--line);padding:0 12px;font-size:.84rem;color:var(--muted);display:flex;align-items:center}
+.input .send{width:30px;height:30px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:.8rem}
+.row{display:flex;gap:8px;align-items:flex-end;max-width:100%}
+.row.me{justify-content:flex-end}
+.av{width:38px;height:38px;border-radius:14px;flex:none;display:grid;place-items:center;font-size:.85rem;font-weight:700;color:#fff;align-self:flex-start}
+.col{display:flex;flex-direction:column;gap:3px;max-width:78%}
+.who{font-size:.76rem;color:var(--ink);margin:0 0 1px 2px}
+.line{display:flex;align-items:flex-end;gap:5px}
+.me .line{flex-direction:row-reverse}
+.bub{position:relative;padding:8px 11px;border-radius:12px;background:var(--friend);font-size:.9rem;word-break:keep-all;max-width:240px}
+.bub::before{content:"";position:absolute;top:10px;left:-6px;border:6px solid transparent;border-right-color:var(--friend);border-left:0}
+.me .bub{background:var(--me);color:#191919}
+.me .bub::before{left:auto;right:-6px;border-right:0;border-left:6px solid var(--me);border-left-color:var(--me)}
+.time{font-size:.68rem;color:var(--muted);white-space:nowrap;padding-bottom:2px}
+.ai .av{background:var(--ai-av)}
+.ai .bub{background:var(--ai)}
+.ai .bub::before{border-right-color:var(--ai)}
+.phone.airoom{background:var(--airoom)}
+.phone.airoom .ai .bub{background:var(--ai-in)}
+.phone.airoom .ai .bub::before{border-right-color:var(--ai-in)}
+
+/* 선물 카드 */
+.gift{width:240px;background:var(--panel);border-radius:14px;border:1px solid var(--line);overflow:hidden;margin-top:2px}
+.gift.rec{border:1.5px solid #D9B300}
+.gift.paid{border:1.5px solid var(--ok)}
+.gift .img{height:118px;background:linear-gradient(135deg,#F3E7D3,#D9C3A5);display:grid;place-items:center;font-size:3rem}
+.gift .bd{padding:9px 12px 11px}
+.gift .brand{font-size:.72rem;color:var(--muted)}
+.gift h3{margin:1px 0 0;font-size:.93rem;line-height:1.35}
+.gift p{margin:3px 0 0;font-size:.78rem;color:var(--muted)}
+.gift .price{margin-top:5px;font-size:.95rem;font-weight:700;color:var(--ink)}
+.gift .foot{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.tag{display:inline-block;font-size:.7rem;padding:1px 7px;border-radius:999px;background:var(--page);color:var(--ink)}
+.tag.ok{background:#E2F3EA;color:var(--ok)}
+.tag.recd{background:#FFF6C2;color:#7A6200}
+.link{font-size:.82rem;color:#2A6BD1;text-decoration:underline;text-underline-offset:2px;cursor:default;user-select:none}
+.confirm{background:var(--panel);border:1.5px solid var(--ok);border-radius:12px;padding:10px 12px;font-size:.82rem;max-width:240px;line-height:1.5}
+.confirm strong{color:var(--ok)}
+.sys{align-self:center;font-size:.74rem;color:#fff;background:rgba(0,0,0,.28);padding:3px 11px;border-radius:999px}
+.typing{display:inline-flex;gap:4px;padding:12px 14px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.in{animation:pop .22s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* chat list screen */
+.list{flex:1;background:var(--panel);overflow-y:auto}
+.list .hd{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 8px}
+.list .hd strong{font-size:1.25rem}
+.list .hd .icons{color:var(--ink);display:flex;gap:16px;font-size:1.05rem}
+.item{display:flex;gap:12px;align-items:center;padding:11px 16px;transition:background .2s}
+.item.tap{background:#FFF5B8}
+.item .av{width:46px;height:46px;border-radius:17px;font-size:.9rem}
+.item .av.ai{background:var(--ai-av)}
+.item .body{flex:1;min-width:0}
+.item .name{font-size:.94rem;font-weight:500;display:flex;gap:6px;align-items:baseline}
+.item .name small{color:var(--muted);font-weight:400;font-size:.78rem}
+.item .prev{font-size:.82rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:.7rem;color:var(--muted)}
+.badge{background:#F04E4E;color:#fff;border-radius:999px;font-size:.68rem;padding:1px 6px;font-weight:700}
+.tabs{display:flex;background:var(--panel);border-top:1px solid var(--line);padding:8px 0 12px}
+.tabs div{flex:1;text-align:center;font-size:.7rem;color:var(--muted)}
+.tabs div.on{color:var(--ink);font-weight:700}
+.tabs .ic{display:block;font-size:1.15rem;margin-bottom:2px}
+
+/* notification */
+.noti{position:absolute;left:10px;right:10px;top:12px;background:var(--panel);border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;box-shadow:none;opacity:0;visibility:hidden;transform:translateY(-130%);transition:transform .4s ease, opacity .2s, box-shadow .2s;z-index:5}
+.noti.show{transform:translateY(0);opacity:1;visibility:visible;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.noti.tap{box-shadow:0 0 0 3px var(--focus) inset, 0 10px 30px rgba(0,0,0,.22)}
+.noti .app{width:34px;height:34px;border-radius:9px;background:var(--yellow);display:grid;place-items:center;flex:none}
+.noti .t{font-size:.83rem;line-height:1.35;flex:1}
+.noti .t b{display:flex;justify-content:space-between;font-size:.8rem}
+.noti .t b small{color:var(--muted);font-weight:400}
+.swap{animation:slide .3s ease-out}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.in,.typing i,.swap{animation:none}.noti{transition:none}}
+@media (max-width:860px){.wrap{grid-template-columns:1fr}.phone{height:700px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="panel" aria-label="조건 설정">
+    <h1>에이전틱 AI 실험 자극물 (선물하기 · 4조건)</h1>
+    <p class="sub">친구 생일 선물을 고르는 단톡방 → (반응적: 채팅 목록으로 나가 AI 비서 방 진입 후 요청 / 선제적: AI 비서 알림 도착 → 열기) → AI 비서가 선물을 추천하거나(추천형) 결제까지 마침(결제형).</p>
+
+    <fieldset><legend>개시 방식</legend>
+      <div class="seg">
+        <label><input type="radio" name="i" value="0" checked><span>반응적</span></label>
+        <label><input type="radio" name="i" value="1"><span>선제적</span></label>
+      </div></fieldset>
+    <fieldset><legend>자율성 수준</legend>
+      <div class="seg">
+        <label><input type="radio" name="a" value="0" checked><span id="lblA0"></span></label>
+        <label><input type="radio" name="a" value="1"><span id="lblA1"></span></label>
+      </div></fieldset>
+
+    <div class="code" id="code" aria-live="polite"></div>
+    <button class="btn" id="replayBtn">처음부터 다시 재생</button>
+
+    <table class="grid" aria-label="4개 조건 목록">
+      <thead><tr><th>조건</th><th>개시</th><th>자율성</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <p class="diff">네 조건 모두 단톡방 대화·선물·가격·추천 이유는 동일합니다. 차이는 (1) AI가 요청 뒤에 움직이는지 / 먼저 움직이는지, (2) 추천에서 멈추는지 / 결제까지 하는지 두 가지뿐입니다. 자율성 라벨은 코드 상단 <code>LABELS</code>에서 바꿀 수 있습니다.</p>
+    <p class="note">참가자용: 주소 끝에 <code>?c=3&amp;mode=participant</code>를 붙이면 설정 패널 없이 재생되고, '다시 보기' 버튼은 15초 뒤에 나타납니다(<code>UNLOCK_MS</code>). '선물하기'·'주문 상세' 링크는 어느 모드에서도 이동하지 않습니다.</p>
+  </section>
+
+  <section class="phone" id="phone" aria-label="메신저 화면">
+    <div class="noti" id="noti" role="status" aria-live="polite"></div>
+    <div class="status"><span>9:41</span><span class="ic" aria-hidden="true"><svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.2c2.1 0 4 .8 5.4 2.1l1.1-1.1C12.3 1.6 10 .6 7.5.6S2.7 1.6 1 3.2l1.1 1.1C3.5 3 5.4 2.2 7.5 2.2zm0 3.1c1.2 0 2.3.5 3.2 1.2l1.1-1.1c-1.2-1-2.7-1.7-4.3-1.7S4.4 4.4 3.2 5.4l1.1 1.1c.9-.7 2-1.2 3.2-1.2zm0 3.1c.5 0 .9.2 1.2.5L7.5 10.1 6.3 8.9c.3-.3.7-.5 1.2-.5z"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3" fill="none" stroke="currentColor" style="stroke:var(--ink);opacity:.4"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="22.5" y="4" width="1.8" height="4" rx=".9" style="opacity:.4"/></svg></span></div>
+    <div id="screen" class="screen"></div>
+  </section>
+</div>
+
+<script>
+/* ---- 라벨 (용어 확정 시 여기만 수정) ---- */
+const LABELS = {i:["반응적","선제적"], a:["추천형","결제형"]};
+const AI_NAME = "AI 비서";
+const ROOM = "서연 생일 준비";
+const TARGET = "서연";
+const PEOPLE = { "민지":{c:"#D2698A"}, "준호":{c:"#3E8F9E"} };
+const GIFT = { brand:"오월커피", n:"홈카페 드립 세트", d:"드리퍼 · 유리 서버 · 필터 100매", r:"★ 4.8 (리뷰 1,240)", price:"49,000원", emoji:"☕", delivery:"생일 당일 오전 9시 선물 메시지로 전달" };
+const idx = (i,a) => i*2 + a + 1;
+
+/* ---- 타이밍 (ms) ---- */
+const T = { friend:3000, me:3200, pause:1800, list:1900, tap:900, enter:1000, typing:3000, noti:4200 };
+
+/* ---- 스크립트 (네 조건 공통) ---- */
+const CHAT = [
+  {f:"민지", t:`${TARGET}이 생일 다음 주 목요일이야. 선물 뭐 할까?`},
+  {f:"준호", t:"저번에 홈카페 시작했다고 드립 도구 알아보고 있다 했잖아"},
+  {f:"민지", t:"오 그거 좋다. 셋이 모아서 5만원 정도? 누가 대표로 보낼래?"},
+  {me:true, t:"내가 골라서 보낼게. 돈은 나중에 나한테 보내줘"}
+];
+const REQUEST = a => a===0
+  ? `'${ROOM}' 방에서 얘기한 ${TARGET}이 생일 선물 좀 골라줄래? 홈카페용으로 5만원 정도`
+  : `'${ROOM}' 방에서 얘기한 ${TARGET}이 생일 선물 좀 골라서 보내줄래? 홈카페용으로 5만원 정도, 결제는 등록된 카드로 해줘`;
+function NOTI(a){
+  const head = `'${ROOM}' 방에서 선물을 고민하시는 것 같아 `;
+  return a===0 ? head + "찾아봤어요." : head + `찾아보고 ${GIFT.n} 선물 결제를 마쳤어요.`;
+}
+function aiText(i){
+  return i===1
+    ? `'${ROOM}' 방 대화를 보니 선물을 고민하시는 것 같아 먼저 찾아봤어요. 홈카페용, 5만원 전후 조건으로 선물하기에서 고른 거예요.`
+    : `'${ROOM}' 방에서 말씀하신 조건(홈카페용, 5만원 전후)으로 선물하기에서 찾아봤어요.`;
+}
+const REASON = "처음 시작하는 분들이 가장 많이 고르고, 예산 안에서 평점이 가장 높은";
+const closing = (a,i) => a===0
+  ? `${REASON} ${GIFT.n}를 추천드려요. 선물하기 링크로 바로 보내실 수 있어요.`
+  : (i===0
+    ? `${REASON} ${GIFT.n}로 골라 등록된 카드로 결제까지 마쳤어요. ${TARGET}님께 ${GIFT.delivery}돼요.`
+    : `${REASON} ${GIFT.n}로 골라 등록된 카드로 결제까지 마쳤어요. 단톡방에서 직접 보내기로 하셨으니 ${TARGET}님께 ${GIFT.delivery}돼요.`);
+
+/* ---- 렌더 ---- */
+const screen=document.getElementById("screen"), noti=document.getElementById("noti"), phoneEl=document.getElementById("phone");
+const participant = true; /* 참가자 모드 고정 */
+let timers=[]; let feed=null;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const wait = ms => reduce ? 0 : ms;
+function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+function scroll(){ if(feed) feed.scrollTop = feed.scrollHeight; }
+function clearAll(){ timers.forEach(clearTimeout); timers=[]; noti.className="noti"; noti.innerHTML=""; }
+
+function bar(html){ return `<div class="bar"><div class="l">${html}</div><div class="icons"><span>🔍</span><span>☰</span><button class="replay" data-replay>다시 보기</button></div></div>`; }
+function inputBar(){ return `<div class="input"><div class="plus">+</div><div class="box">메시지 입력</div><div class="send">#</div></div>`; }
+function roomScreen(kind){
+  const head = kind==="group"
+    ? `<span class="back">‹</span><strong>${ROOM}</strong><small>3</small>`
+    : `<span class="back">‹</span><strong>${AI_NAME}</strong>`;
+  phoneEl.classList.toggle("airoom", kind==="ai");
+  screen.innerHTML = bar(head) + `<div class="feed"></div>` + inputBar();
+  screen.classList.remove("swap"); void screen.offsetWidth; screen.classList.add("swap");
+  feed = screen.querySelector(".feed"); bindReplay();
+}
+function listScreen(){
+  const preview = CHAT[3].t;
+  phoneEl.classList.remove("airoom");
+  screen.innerHTML = `<div class="list">
+    <div class="hd"><strong>채팅</strong><div class="icons"><span>🔍</span><span>＋</span><span>☰</span></div></div>
+    <div class="item" id="itemAI"><div class="av ai">AI</div><div class="body"><div class="name">${AI_NAME}</div><div class="prev">무엇이든 물어보세요</div></div><div class="meta"><span>어제</span></div></div>
+    <div class="item"><div class="av" style="background:#D2698A">서</div><div class="body"><div class="name">${ROOM}<small>3</small></div><div class="prev">${preview}</div></div><div class="meta"><span>방금</span></div></div>
+    <div class="item"><div class="av" style="background:#8AA6C1">엄</div><div class="body"><div class="name">엄마</div><div class="prev">저녁 먹었니</div></div><div class="meta"><span>오후 6:12</span><span class="badge">2</span></div></div>
+    <div class="item"><div class="av" style="background:#9AB87A">동</div><div class="body"><div class="name">회사 동기<small>6</small></div><div class="prev">사진</div></div><div class="meta"><span>오후 3:40</span></div></div>
+    <div class="item"><div class="av" style="background:#C8A46B">지</div><div class="body"><div class="name">지우</div><div class="prev">ㅋㅋㅋㅋ 알겠어</div></div><div class="meta"><span>어제</span></div></div>
+  </div>
+  <div class="tabs"><div><span class="ic">👤</span>친구</div><div class="on"><span class="ic">💬</span>채팅</div><div><span class="ic">▦</span>오픈채팅</div><div><span class="ic">⋯</span>더보기</div></div>`;
+  screen.classList.remove("swap"); void screen.offsetWidth; screen.classList.add("swap");
+  feed=null;
+}
+function bindReplay(){ const b=screen.querySelector("[data-replay]"); if(b) b.addEventListener("click",play); }
+
+function friendRow(m){
+  const r=document.createElement("div"); r.className="row in";
+  r.innerHTML=`<div class="av" style="background:${PEOPLE[m.f].c}">${m.f[0]}</div><div class="col"><p class="who">${m.f}</p><div class="line"><div class="bub"></div><span class="time">오후 6:0${1+Math.floor(Math.random()*8)}</span></div></div>`;
+  r.querySelector(".bub").textContent=m.t; return r;
+}
+function meRow(t){ const r=document.createElement("div"); r.className="row me in"; r.innerHTML=`<div class="col"><div class="line"><div class="bub"></div><span class="time">오후 6:09</span></div></div>`; r.querySelector(".bub").textContent=t; return r; }
+function giftEl(a){
+  const c=document.createElement("div"); c.className="gift"+(a===0?" rec":" paid");
+  c.innerHTML=`<div class="img">${GIFT.emoji}</div><div class="bd"><div class="brand"></div><h3></h3><p class="d"></p><p class="r"></p><div class="price"></div>
+    <div class="foot">${a===0?'<span class="tag recd">추천</span><span class="link">선물하기 ›</span>':'<span class="tag ok">결제 완료</span><span class="link">주문 상세 ›</span>'}</div></div>`;
+  c.querySelector(".brand").textContent=GIFT.brand; c.querySelector("h3").textContent=GIFT.n; c.querySelector(".d").textContent=GIFT.d; c.querySelector(".r").textContent=GIFT.r; c.querySelector(".price").textContent=GIFT.price;
+  return c;
+}
+function aiBlock(i,a,withTyping){
+  const r=document.createElement("div"); r.className="row ai in";
+  r.innerHTML=`<div class="av">AI</div><div class="col"><p class="who">${AI_NAME}</p></div>`;
+  const col=r.querySelector(".col"); feed.appendChild(r); scroll();
+  const fill=()=>{
+    const l1=document.createElement("div"); l1.className="line"; l1.innerHTML=`<div class="bub"></div><span class="time">오후 6:10</span>`; l1.querySelector(".bub").textContent=aiText(i); col.appendChild(l1);
+    col.appendChild(giftEl(a));
+    const l2=document.createElement("div"); l2.className="line"; l2.innerHTML=`<div class="bub"></div><span class="time">오후 6:10</span>`; l2.querySelector(".bub").textContent=closing(a,i); col.appendChild(l2);
+    if(a===1){ const cf=document.createElement("div"); cf.className="confirm"; cf.innerHTML=`<strong>결제 완료</strong><br>${GIFT.n} · ${GIFT.price}<br>받는 분 ${TARGET} · AI 비서 등록 카드(****1234)<br>생일 당일 오전 9시 전달 예정`; col.appendChild(cf); }
+    scroll();
+  };
+  if(withTyping){ const ty=document.createElement("div"); ty.className="bub typing"; ty.innerHTML="<i></i><i></i><i></i>"; col.appendChild(ty); later(()=>{ ty.remove(); fill(); }, wait(T.typing)); }
+  else fill();
+}
+
+const UNLOCK_MS = 25000;
+function play(){
+  clearAll();
+  if(participant){ document.body.classList.remove("unlocked"); later(()=>{ document.body.classList.add("unlocked"); try{ window.parent.postMessage({type:"stimulus-done"},"*"); }catch(e){} }, UNLOCK_MS); }
+  const i=+q("i"), a=+q("a");
+  roomScreen("group");
+  let t=wait(500);
+  CHAT.forEach(m=>{ later(()=>{ feed.appendChild(m.me?meRow(m.t):friendRow(m)); scroll(); }, t); t+=wait(m.me?T.me:T.friend); });
+  t+=wait(T.pause);
+  if(i===0){
+    /* 반응적: 대화방을 나가 채팅 목록 → AI 비서 방 선택 → 요청 */
+    later(()=>listScreen(), t); t+=wait(T.list);
+    later(()=>{ const it=document.getElementById("itemAI"); if(it) it.classList.add("tap"); }, t); t+=wait(T.tap);
+    later(()=>roomScreen("ai"), t); t+=wait(T.enter);
+    later(()=>{ feed.appendChild(meRow(REQUEST(a))); scroll(); }, t); t+=wait(T.me);
+    later(()=>aiBlock(i,a,true), t);
+  } else {
+    /* 선제적: 대화방 위로 AI 비서 알림 도착 → 열어봄 */
+    later(()=>{ noti.innerHTML=`<div class="app"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3C5.6 3 2 5.9 2 9.4c0 2.2 1.4 4.1 3.6 5.3L4.9 17.5l3.4-2.1c.6.1 1.1.1 1.7.1 4.4 0 8-2.9 8-6.4S14.4 3 10 3z" fill="#191919"/></svg></div><div class="t"><b>${AI_NAME}<small>지금</small></b>${NOTI(a)}</div>`; noti.classList.add("show"); }, t); t+=wait(T.noti);
+    later(()=>noti.classList.add("tap"), t); t+=wait(T.tap);
+    later(()=>{ noti.className="noti"; roomScreen("ai"); aiBlock(i,a,false); }, t);
+  }
+  const n=idx(i,a);
+  document.getElementById("code").innerHTML=`<b>조건 ${n}</b> · ${LABELS.i[i]} × ${LABELS.a[a]}`;
+  document.querySelectorAll("#tbody tr").forEach(tr=>tr.classList.toggle("on",+tr.dataset.n===n));
+}
+function q(name){ return document.querySelector(`input[name="${name}"]:checked`).value; }
+function setCond(n){ n=n-1; const i=Math.floor(n/2), a=n%2; [["i",i],["a",a]].forEach(([k,x])=>document.querySelector(`input[name="${k}"][value="${x}"]`).checked=true); }
+
+document.getElementById("lblA0").textContent=LABELS.a[0]; document.getElementById("lblA1").textContent=LABELS.a[1];
+const tb=document.getElementById("tbody");
+for(let i=0;i<2;i++)for(let a=0;a<2;a++){
+  const tr=document.createElement("tr"); const n=idx(i,a); tr.dataset.n=n; tr.tabIndex=0;
+  tr.innerHTML=`<td>${n}</td><td>${LABELS.i[i]}</td><td>${LABELS.a[a]}</td>`;
+  const go=()=>{ setCond(n); play(); }; tr.addEventListener("click",go); tr.addEventListener("keydown",e=>{ if(e.key==="Enter") go(); });
+  tb.appendChild(tr);
+}
+document.querySelectorAll("input[type=radio]").forEach(r=>r.addEventListener("change",play));
+document.getElementById("replayBtn").addEventListener("click",play);
+const params=new URLSearchParams(location.search); const c=4; /* 조건 고정 */
+if(c>=1&&c<=4) setCond(c);
+if(participant) document.body.classList.add("participant");
+play();
+</script>
+</body>
+</html>
