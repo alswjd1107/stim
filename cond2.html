@@ -156,10 +156,11 @@ body.participant .status{padding-top:max(10px,env(safe-area-inset-top))}
 /* ---------- 시작 화면 (상황 안내) ---------- */
 .intro{position:absolute;inset:0;z-index:20;background:var(--panel);color:var(--ink);display:flex;flex-direction:column}
 .intro[hidden]{display:none}
-.intro .ibody{flex:1;overflow-y:auto;padding:max(22px,env(safe-area-inset-top)) 20px 8px}
-.intro h2{font-size:1.1rem;margin:0 0 10px;font-weight:700}
-.intro h3{font-size:.92rem;margin:14px 0 4px;font-weight:700;color:var(--ink)}
-.intro p{font-size:.88rem;margin:0 0 8px;line-height:1.6;word-break:keep-all;text-align:justify}
+.intro .ibody{flex:1;overflow-y:auto;padding:max(18px,env(safe-area-inset-top)) 22px 8px;display:flex;flex-direction:column}
+.intro .iwrap{margin:auto 0}
+.intro h2{font-size:1.15rem;margin:0 0 12px;font-weight:700}
+.intro h3{font-size:.95rem;margin:14px 0 4px;font-weight:700;color:var(--ink)}
+.intro p{font-size:.9rem;margin:0 0 8px;line-height:1.6;word-break:keep-all;text-align:justify}
 .intro .ifoot{padding:12px 22px max(18px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--panel)}
 .intro .cd{font-size:.8rem;color:var(--muted);text-align:center;margin:0 0 8px}
 .intro .start{width:100%;padding:13px;border-radius:12px;border:0;background:var(--yellow);color:#191919;font-weight:700;font-size:1rem}
@@ -198,16 +199,16 @@ body.participant .status{padding-top:max(10px,env(safe-area-inset-top))}
   <section class="phone" id="phone" aria-label="메신저 화면">
     <div class="noti" id="noti" role="status" aria-live="polite"></div>
     <section class="intro" id="intro" aria-label="상황 안내" hidden>
-      <div class="ibody">
+      <div class="ibody"><div class="iwrap">
         <h2>상황 안내</h2>
         <p>지금부터 카카오톡에서 일어날 수 있는 한 장면을 보시게 됩니다. 귀하가 실제로 이 상황에 있다고 생각하며 읽어 주세요.</p>
         <h3>상황</h3>
         <p>귀하는 친구 두 명과 함께 있는 카카오톡 단체 채팅방에서, 다음 주에 생일인 다른 친구의 선물을 의논하고 있습니다. 셋이 돈을 모아 5만 원 정도의 홈카페용 선물을 하기로 했고, 선물을 골라 카카오톡 선물하기로 보내는 일은 귀하가 맡기로 했습니다.</p>
         <h3>AI 비서</h3>
-        <p>귀하의 카카오톡에는 AI 비서 기능이 켜져 있으며, 귀하의 결제 카드가 등록되어 있습니다. AI 비서는 카카오톡 대화의 맥락을 이해할 수 있고, AI 비서와의 대화는 채팅 목록의 'AI 비서' 대화방에서 이루어집니다.</p>
+        <p>귀하는 평소 카카오톡에 내장된 AI 비서를 이용하고 있습니다. AI 비서는 카카오톡 대화의 맥락을 이해할 수 있으며, 채팅 목록의 'AI 비서' 대화방에서 메시지를 주고받습니다.</p>
         <h3>시청 안내</h3>
         <p>[시청 시작]을 누르면 이어지는 상황이 카카오톡 화면으로 자동 재생됩니다. 화면 속 오른쪽 말풍선이 귀하가 보낸 메시지입니다. 끝까지 주의 깊게 봐 주세요.</p>
-      </div>
+      </div></div>
       <div class="ifoot">
         <p class="cd" id="countdown" aria-live="polite"></p>
         <button class="start" id="startBtn" disabled>시청 시작</button>
